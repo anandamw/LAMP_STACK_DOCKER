@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  web:
+    image: php:8.1-apache
+    container_name: lamp_web
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "8080:80"
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    networks:
+      - lamp_network
+
+  db:
+    image: mysql:5.7
+    container_name: lamp_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: nanda     # Password root untuk MySQL
+    #MYSQL_DATABASE: mydatabase
+    #MYSQL_USER: user
+    #MYSQL_PASSWORD: userpassword
+    ports:
+      - "3306:3306"
+    networks:
+      - lamp_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+  #    PMA_USER: root                # Gunakan user root
+ #     PMA_PASSWORD: root            # Password root harus sesuai dengan yang digunakan di MySQL
+    networks:
+      - lamp_network
+
+networks:
+  lamp_network:
+
